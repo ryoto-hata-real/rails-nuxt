@@ -8,7 +8,7 @@ services:
       TZ: UTC
       # postgresのタイムゾーン
       PGTZ: UTC
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - "./api/tmp/db:/var/lib/postgresql/data"
 
@@ -18,11 +18,11 @@ services:
       context: ./api
       # Dockerfile内のWORKDIRに値を渡す
       args:
-        WORKDIR: $WORKDIR
+        WORKDIR: "app"
     environment:
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./api:/$WORKDIR
+      - "./api:/app"
     depends_on:
       - db
     # 公開したいポート番号：コンテナポート
@@ -33,13 +33,12 @@ services:
     build:
       context: ./front
       args:
-        WORKDIR: $WORKDIR
-        CONTAINER_PORT: $CONTAINER_PORT
+        WORKDIR: "app"
     # コンテナで実行したいコマンド
     # Dockerfileではなくここで指定している理由は、yarn run devは開発用なので、本番でも使うDockerfileには書きたくないから。
     command: yarn run dev
     volumes:
-      - "./front:/$WORKDIR"
+      - "./front:/app"
     ports:
       - "$FRONT_PORT:3000"
     depends_on:
