@@ -21,6 +21,7 @@ services:
         WORKDIR: "app"
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      API_DOMAIN: "localhost:$FRONT_PORT"
     volumes:
       - "./api:/app"
     depends_on:
@@ -34,6 +35,7 @@ services:
       context: ./front
       args:
         WORKDIR: "app"
+        API_URL: "http://localhost:$API_PORT"
     # コンテナで実行したいコマンド
     # Dockerfileではなくここで指定している理由は、yarn run devは開発用なので、本番でも使うDockerfileには書きたくないから。
     command: yarn run dev
